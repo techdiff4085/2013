@@ -1,0 +1,379 @@
+// drives, shoots, both sets of pneumatics
+
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
+package edu.wpi.first.wpilibj.templates;
+
+//Ashley's second test
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.templates.commands.ShooterSetSpeed;
+import edu.wpi.first.wpilibj.templates.subsystems.*;
+import edu.wpi.first.wpilibj.templates.commands.CommandBase;
+
+public class RobotTemplate extends IterativeRobot {
+
+    Command autonomousCommand;
+    Command ShooterSetSpeed;
+    ShooterSetSpeed autoShootStart = new ShooterSetSpeed(.825f);
+    ShooterSetSpeed autoKaioken = new ShooterSetSpeed(.9f);
+    ShooterSetSpeed autoShootStop = new ShooterSetSpeed(0f);
+    ShooterSetSpeed autoSuperSayian = new ShooterSetSpeed(1f);
+    private static final Compressor compressor = new Compressor(RobotMap.COMPRESSOR_RELAY_PORT,RobotMap.COMPRESSOR_ONOFF_CHECK_IO_PORT);
+    private static final Solenoid shootplatform_up_solenoid = new Solenoid(RobotMap.SHOOTPLATFORM_UP_RELAY_PORT);
+    private static final Solenoid shootplatform_down_solenoid = new Solenoid(RobotMap.SHOOTPLATFORM_DOWN_RELAY_PORT);
+    private static final Joystick rightStick = new Joystick(RobotMap.RIGHT_JOYSTICK_PORT);
+    private static final Joystick shootStick = new Joystick(RobotMap.SHOOTER_JOYSTICK_PORT);
+    private static final Joystick leftStick = new Joystick(RobotMap.LEFT_JOYSTICK_PORT);
+    private static final Solenoid indexer_down_solenoid = new Solenoid(RobotMap.INDEXER_DOWN_RELAY_PORT);
+    private static final Solenoid indexer_up_solenoid = new Solenoid(RobotMap.INDEXER_UP_RELAY_PORT);
+    private static final Ultrasonic ultra_frontright = new Ultrasonic(RobotMap.RANGEFINDER_RIGHT_OUTPUT_IO_PORT,RobotMap.RANGEFINDER_RIGHT_INPUT_IO_PORT);
+    private static final Ultrasonic ultra_frontleft = new Ultrasonic(RobotMap.RANGEFINDER_LEFT_OUTPUT_IO_PORT,RobotMap.RANGEFINDER_LEFT_INPUT_IO_PORT);
+    int i = 0;
+    
+    private static double rightrange = 0;
+    private static double leftrange = 0;
+    private static double closestrange = 0;
+    private static boolean leftisclosest = false; 
+
+    //static SpeedController shootMotor = new Talon(RobotMap.SHOOTER_MOTOR_PORT);
+    /*
+     */
+
+    public void robotInit() {
+        // instantiate the command used for the autonomous period
+        //autonomousCommand = new ExampleCommand();
+
+        // Initialize all subsystems
+        System.out.print("Entering robotInit()\r\n");
+        System.out.print("I only got twenty dollars in my pocket!\r\n");
+        CommandBase.init();
+        Chassis.getInstance();
+        
+        
+    }
+
+    public void autonomousInit() {
+        // schedule the autonomous command (example)
+        //autonomousCommand.start();
+        System.out.print("Entering autonomousInit()\r\n");
+        System.out.print("Code version 1.2\r\n");
+        compressor.start();                             // turns on compressor
+        
+    }
+
+    /**
+     * This function is called periodically during autonomous
+     */
+    public void autonomousPeriodic() {
+        while(i < 1) {
+        Scheduler.getInstance().run();
+        shootplatform_up_solenoid.set(false);            // shoot platform goes up
+        shootplatform_down_solenoid.set(true);
+        autoShootStart.execute();
+        Timer.delay(3.65);                                 // wait 3 seconds
+        indexer_down_solenoid.set(true);                // shoots piston, first frisbee
+        indexer_up_solenoid.set(false);
+        Timer.delay(.25);                               // waits .25 seconds
+        indexer_down_solenoid.set(false);               // retracts piston
+        indexer_up_solenoid.set(true);
+        Timer.delay(1.15);                               // waits 1.5 seconds
+        indexer_down_solenoid.set(true);                // shoots piston, second frisbee
+        indexer_up_solenoid.set(false);
+        Timer.delay(.25);                               // waits .25 seconds
+        indexer_down_solenoid.set(false);               // retracts piston
+        indexer_up_solenoid.set(true);
+        Timer.delay(1.15);                               // waits 1.5 seconds
+        indexer_down_solenoid.set(true);
+        indexer_up_solenoid.set(false);                 // shoots piston, third frisbee
+        Timer.delay(.25);                               // waits .25 seconds
+        indexer_down_solenoid.set(false);               // retracts piston
+        indexer_up_solenoid.set(true);                  
+        autoShootStop.execute();
+        compressor.start();
+        i++;
+        
+        }
+        
+    }
+
+    
+    
+    
+    public void teleopInit() {
+	// This makes sure that the autonomous stops running when
+        // teleop starts running. If you want the autonomous to 
+        // continue until interrupted by another command, remove
+        // this line or comment it out.
+        //autonomousCommand.cancel();
+        System.out.print("Ohayo gozaimasu.....I'm going SUPER SAYIAAAAAAAAAAAAAAAN!!!\r\n");
+        compressor.start(); //only need to start the compressor once
+        System.out.print("Compressor is Active");
+        ultra_frontleft.setAutomaticMode(true); //set rangefinder mode
+        ultra_frontright.setAutomaticMode(true);
+        i = 0;
+        indexer_down_solenoid.set(false);
+            indexer_up_solenoid.set(true);
+          }
+
+    
+    
+    
+    /**
+     * This function is called periodically during operator control
+     *----------------------------------------------------------------------------------------
+     * ---------------------------------------------------------------------------------------
+     */
+    public void teleopPeriodic() {
+        
+        
+        
+        Scheduler.getInstance().run();
+   
+  
+        //this code actually shoots the frisbee by pushing the disc into the spinning wheel
+        if(shootStick.getRawButton(9));
+        {
+               
+        }
+        
+        if(shootStick.getRawButton(1))
+        {
+            indexer_down_solenoid.set(true);
+            indexer_up_solenoid.set(false);
+            
+        }
+        else {
+            indexer_down_solenoid.set(false);
+            indexer_up_solenoid.set(true);
+            
+        
+        }
+        //For Auto Shooting
+         if(shootStick.getRawButton(8))
+        {
+            autoSuperSayian.execute();
+            Timer.delay(.48);
+            autoSuperSayian.execute();
+            Timer.delay(.12);
+            indexer_down_solenoid.set(true);
+            indexer_up_solenoid.set(false);
+            Timer.delay(.150);
+            indexer_down_solenoid.set(false);
+            indexer_up_solenoid.set(true);
+            Timer.delay(1.00);
+            //Second
+            indexer_down_solenoid.set(true);
+            indexer_up_solenoid.set(false);
+            Timer.delay(.150);
+            indexer_down_solenoid.set(false);
+            indexer_up_solenoid.set(true);
+            Timer.delay(1.00);
+            //Third
+            indexer_down_solenoid.set(true);
+            indexer_up_solenoid.set(false);
+            Timer.delay(.135);
+            indexer_down_solenoid.set(false);
+            indexer_up_solenoid.set(true);
+            Timer.delay(1.0);
+            //Fourth
+            indexer_down_solenoid.set(true);
+            indexer_up_solenoid.set(false);
+            Timer.delay(.15);
+            indexer_down_solenoid.set(false);
+            indexer_up_solenoid.set(true);
+            Timer.delay(.32);
+        }
+            else { //if none of the shooter speed buttons are pressed... then stop the motor
+             if (!shootStick.getRawButton(2) && !shootStick.getRawButton(3) && !shootStick.getRawButton(4) && !shootStick.getRawButton(5) && !shootStick.getRawButton(6))
+               {
+                autoShootStop.execute();
+               }
+             
+             if(shootStick.getRawButton(9))
+        {
+            autoKaioken.execute();
+            Timer.delay(.6);
+            autoKaioken.execute();
+            Timer.delay(.12);
+            indexer_down_solenoid.set(true);
+            indexer_up_solenoid.set(false);
+            Timer.delay(.150);
+            indexer_down_solenoid.set(false);
+            indexer_up_solenoid.set(true);
+            Timer.delay(.30);
+            //Second
+            indexer_down_solenoid.set(true);
+            indexer_up_solenoid.set(false);
+            Timer.delay(.150);
+            indexer_down_solenoid.set(false);
+            indexer_up_solenoid.set(true);
+            Timer.delay(.30);
+            //Third
+            indexer_down_solenoid.set(true);
+            indexer_up_solenoid.set(false);
+            Timer.delay(.150);
+            indexer_down_solenoid.set(false);
+            indexer_up_solenoid.set(true);
+            Timer.delay(.3);
+            //Fourth
+            indexer_down_solenoid.set(true);
+            indexer_up_solenoid.set(false);
+            Timer.delay(.170);
+            indexer_down_solenoid.set(false);
+            indexer_up_solenoid.set(true);
+            Timer.delay(.32);
+        }
+         else { //if none of the shooter speed buttons are pressed... then stop the motor
+             if (!shootStick.getRawButton(2) && !shootStick.getRawButton(3) && !shootStick.getRawButton(4) && !shootStick.getRawButton(5) && !shootStick.getRawButton(6))
+               {
+                autoShootStop.execute();
+               }
+        
+         }
+         }
+        //this code moves the shooter platform up and down
+        if (rightStick.getRawButton(RobotMap.RIGHT_JOYSTICK_BUTTON_SHOOTPLATFORM_DOWN)) {
+            shootplatform_up_solenoid.set(false);
+            shootplatform_down_solenoid.set(true);
+            SmartDashboard.putString("Platform: ","Up");
+        } 
+         if (rightStick.getRawButton(RobotMap.RIGHT_JOYSTICK_BUTTON_SHOOTPLATFORM_UP)) {
+            shootplatform_up_solenoid.set(true);
+            shootplatform_down_solenoid.set(false);
+            SmartDashboard.putString("Platform: ","Down");
+        }
+        
+         
+         //Auto pilot
+         //---------------------------------------------------------------------------------------
+         //---------------------------------------------------------------------------------------
+         if (leftStick.getRawButton(RobotMap.LEFT_JOYSTICK_BUTTON_AUTOPILOT)) {
+             //when the closest sensor is within 60 inches (might need to tweak this number)
+             //then drive forward. as we get closer to the object, slow down.
+             //when the closest sensor is within 2 inches of our target range
+             //then straighten the robot out.
+                         
+             rightrange = ultra_frontright.getRangeInches();
+             leftrange = ultra_frontleft.getRangeInches();
+             System.out.print("Front left range: "+leftrange+"    Front right range: "+rightrange+"\r\n");
+             
+             
+             //whichever rangefinder is closest to the object, we'll use that one to determine distance
+             if (leftrange < rightrange)
+                {
+                    closestrange = leftrange;
+                    leftisclosest = true;
+                }
+             else 
+                {
+                 closestrange = rightrange;
+                 leftisclosest = false;
+                }
+             
+             
+             if ((closestrange < RobotMap.MAX_DISTANCE) && (closestrange >= RobotMap.STOP_DISTANCE+12)) {
+                //we're in range - start driving fast
+                 System.out.print("within 4 feet\r\n)");
+                Chassis.getInstance().driveWithValues(-.6,-.6);
+             }
+             else if ((closestrange <RobotMap.STOP_DISTANCE + 12) && (closestrange>= RobotMap.STOP_DISTANCE+2)) {
+                //we're within 1 foot of the object, slow down and straighten out
+                 System.out.print("within 1 foot\r\n");
+                 Chassis.getInstance().driveWithValues(-.3,-.3);
+             }
+             else if ((closestrange < RobotMap.STOP_DISTANCE+2) && (closestrange >= RobotMap.STOP_DISTANCE)) {
+                 //we got the right distance , within 2 inches - STOP driving and straighten out
+                 System.out.print("perfect distance on the closest rangefinder\r\n");
+                 if (leftisclosest == true) //if left is the closest distance, then we need to move the right motor forward
+                         {
+                             System.out.print("straighten: left is closest. move right motor forward.\r\n");
+                             rightrange = ultra_frontright.getRangeInches();
+                             if (rightrange > leftrange+.5)
+                             {
+                                 System.out.print("straighten: moving right motor forward\r\n");
+                                 Chassis.getInstance().driveWithValues(0,-.3);
+                             }
+                             else if (rightrange < leftrange - .5)
+                             {
+                                 System.out.print("straighten: went too far. moving right motor back\r\n");
+                                 Chassis.getInstance().driveWithValues(0,.3);
+                             }
+                 } //end left is closest
+                  if (leftisclosest == false) //if right side is the closest distance, then we need to move the left motor forward
+                         {
+                             System.out.print("straighten: right is closest. move left motor forward.\r\n");
+                             leftrange = ultra_frontleft.getRangeInches();
+                             if (leftrange > rightrange+.5)
+                             {
+                                 System.out.print("straighten: moving left motor forward\r\n");
+                                 Chassis.getInstance().driveWithValues(-.3,0);
+                             }
+                             else if (leftrange < rightrange - .5)
+                             {
+                                 System.out.print("straighten: went too far. moving left motor back\r\n");
+                                 Chassis.getInstance().driveWithValues(.3,0);
+                             }
+                 } //end right is closest
+                 //otherwise, we're the perfect distance on both right and left sides. stop motors.
+                 Chassis.getInstance().driveWithValues(0,0);
+             }
+             else if (closestrange < RobotMap.STOP_DISTANCE) {
+                 //we're too close - back up 
+                 System.out.print("too close. backup\r\n");
+                 Chassis.getInstance().driveWithValues(.3,.3);
+             }
+            } //end if autopilot button is pressed
+         
+         
+            
+         
+       
+                  
+         
+         //this code converts the z-axis scroller on the joystick 
+         //from range -1 -> 1 (-1 at the top, 1 at the bottom)
+         //to 1 -> 0 (1 at the top, 0 at the top)
+         //Logic Base
+//         VariableSpeed = (shootStick.getRawAxis(3));
+//         VariableSpeed = VariableSpeed*-1;
+//         if(VariableSpeed < 0)
+//         {
+//             VariableSpeed = VariableSpeed*-1;
+//             VariableSpeed = ((.5-(VariableSpeed/2)));
+//         }
+//         else
+//                 {
+//                 VariableSpeed = (VariableSpeed/2)+.5;
+//                 }
+         //System.out.print(VariableSpeed+"\r\n");
+         /*
+         rightrange = ultra_frontright.getRangeInches();
+             leftrange = ultra_frontleft.getRangeInches();
+             SmartDashboard.putNumber("Left Range: ", leftrange);
+             SmartDashboard.putNumber("Right Range: ",rightrange);
+             System.out.print("Front left range: "+leftrange+"    Front right range: "+rightrange+"\r\n");
+
+*/
+    
+    
+    /**
+     * This function is called periodically during test mode
+     */
+    }
+    public void testPeriodic() {
+        }
+    }
+

@@ -1,0 +1,44 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package edu.wpi.first.wpilibj.templates.subsystems;
+
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.templates.RobotMap;
+
+
+
+/**
+ *
+ * @author Sebastian
+ */
+public class Shootmotor1 extends Subsystem {
+
+    static SpeedController motor = new Talon(RobotMap.SHOOTER_MOTOR_PORT);
+    private float _speed = 0.0f;
+    public void initDefaultCommand() {
+        // Set the default command for a subsystem here.
+
+        //setDefaultCommand(new ShooterDoNothing());
+    }
+    
+    public float getSpeed()
+    {
+        return _speed;
+    }
+    
+    public void setSpeed(float speed)
+    {
+        if(_speed != speed)
+        {
+            _speed = speed;
+            motor.set(_speed);
+        }
+    }
+    
+        
+}
+

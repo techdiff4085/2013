@@ -1,0 +1,66 @@
+package edu.wpi.first.wpilibj.templates;
+
+
+
+/**
+ * The RobotMap is a mapping from the ports sensors and actuators are wired into
+ * to a variable name. This provides flexibility changing wiring, makes checking
+ * the wiring easier and significantly reduces the number of magic numbers
+ * floating around.
+ */
+public class RobotMap {   
+    //define ports for motors
+    public static final int LEFTDRIVE_MOTOR_PORT = 2;
+    public static final int RIGHTDRIVE_MOTOR_PORT = 1;
+    public static final int SHOOTER_MOTOR_PORT = 3;
+    public static final int CLIMB_PORT = 5;
+    public static final int LIGHTS = 4;
+    // public static final int CLIMB_SECOND_MOTOR_PORT = 5;
+    
+  
+    //define ports for joysticks  
+    public static final int LEFT_JOYSTICK_PORT = 1;
+    public static final int RIGHT_JOYSTICK_PORT = 2;
+    public static final int SHOOTER_JOYSTICK_PORT = 3;
+    
+    //define buttons
+    /*public static final int SHOOTER_JOYSTICK_BUTTON_LOWSPEED = 4;
+    public static final int LIGHTS_LOW = 4;
+    public static final int LIGHTS_MID = 3;
+    public static final int LIGHTS_HIGH = 5;
+    public static final int SHOOTER_JOYSTICK_BUTTON_MIDSPEED = 3;
+    public static final int SHOOTER_JOYSTICK_BUTTON_HIGHSPEED = 5;
+    public static final int SHOOTER_JOYSTICK_BUTTON_INDEXER_DOWN = 10;
+    public static final int SHOOTER_JOYSTICK_BUTTON_INDEXER_UP = 11;*/
+    public static final int RIGHT_JOYSTICK_BUTTON_SHOOTPLATFORM_DOWN = 4;
+    public static final int RIGHT_JOYSTICK_BUTTON_SHOOTPLATFORM_UP = 5;
+    public static final int LEFT_JOYSTICK_BUTTON_AUTOPILOT = 1;
+
+    
+    //define shooter speeds
+    public static final float SHOOTER_LOWSPEED = .80f;
+    public static final float SHOOTER_MIDSPEED = .90f;
+    public static final float SHOOTER_HIGHSPEED = 1.0f;
+   
+    //define digital input / output ports
+    public static final int COMPRESSOR_ONOFF_CHECK_IO_PORT = 1;    //spike relay
+    public static final int RANGEFINDER_RIGHT_OUTPUT_IO_PORT = 4;
+    public static final int RANGEFINDER_RIGHT_INPUT_IO_PORT = 5;
+    public static final int RANGEFINDER_LEFT_OUTPUT_IO_PORT = 6;
+    public static final int RANGEFINDER_LEFT_INPUT_IO_PORT = 7;
+    
+    
+    
+    //define relay ports
+    public static final int COMPRESSOR_RELAY_PORT = 3;   //pressure switch
+    public static final int SHOOTPLATFORM_DOWN_RELAY_PORT = 7;
+    public static final int SHOOTPLATFORM_UP_RELAY_PORT = 8;
+    public static final int INDEXER_DOWN_RELAY_PORT = 5;
+    public static final int INDEXER_UP_RELAY_PORT = 6;
+    
+    
+    //define other constants
+    public static final int MAX_DISTANCE = 60;
+    public static final int STOP_DISTANCE = 28;
+    
+}
